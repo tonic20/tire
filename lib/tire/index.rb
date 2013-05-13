@@ -121,6 +121,7 @@ module Tire
       document, options = args
 
       id       = get_id_from_document(document)
+      parent   = get_parent_from_document(document)
       type     = get_type_from_document(document)
       document = convert_document_to_json(document)
 
@@ -135,6 +136,7 @@ module Tire
       params[:parent]  = options[:parent]  if options[:parent]
       params[:routing] = options[:routing] if options[:routing]
       params[:replication] = options[:replication] if options[:replication]
+      params[:parent]  = parent if parent
 
       params_encoded = params.empty? ? '' : "?#{params.to_param}"
 
@@ -478,6 +480,10 @@ module Tire
       end
       $VERBOSE = old_verbose
       id
+    end
+
+    def get_parent_from_document(document)
+      document._parent.id if document.respond_to?(:_parent)
     end
 
     def convert_document_to_json(document)
