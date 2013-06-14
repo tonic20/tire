@@ -484,12 +484,8 @@ module Tire
     end
 
     def get_parent_from_document(document)
-      case
-        when document.respond_to?(:parent)
-          document.parent.id
-        when document.respond_to?(:_parent)
-          document._parent.id
-      end
+      document.document_parent.id if document.respond_to?(:document_parent) &&
+          document.document_parent.respond_to?(:id)
     end
 
     def convert_document_to_json(document)
