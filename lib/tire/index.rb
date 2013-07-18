@@ -484,8 +484,15 @@ module Tire
     end
 
     def get_parent_from_document(document)
-      document.document_parent.id if document.respond_to?(:document_parent) &&
-          document.document_parent.respond_to?(:id)
+      old_verbose, $VERBOSE = $VERBOSE, nil # Silence Object#type deprecation warnings
+      parent = case
+        when document.respond_to?(:document_parent) && !document.document_parent.nil?
+          document.document_parent.id
+        when document.is_a?(Hash)
+          document[:_parent] || document['_parent'] || document[:parent] || document['parent']
+      end
+      $VERBOSE = old_verbose
+      parent
     end
 
     def convert_document_to_json(document)
