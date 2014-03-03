@@ -50,7 +50,7 @@ module Tire
     end
 
     def self.enable_all_es_callbacks
-      searchable_models.each { |model| model.disable_es_callbacks }
+      searchable_models.each { |model| model.enable_es_callbacks }
     end
   end
 end

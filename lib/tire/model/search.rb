@@ -141,13 +141,15 @@ module Tire
         # It will also execute any `<after|before>_update_elasticsearch_index` callback hooks.
         #
         def update_index
-          instance.run_callbacks :update_elasticsearch_index do
-            if instance.destroyed?
-              index.remove instance
-            else
-              response = index.store( instance, {:percolate => percolator} )
-              instance.tire.matches = response['matches'] if instance.tire.respond_to?(:matches=)
-              self
+          unless instance.class.disable_es
+            instance.run_callbacks :update_elasticsearch_index do
+              if instance.destroyed?
+                index.remove instance
+              else
+                response = index.store( instance, {:percolate => percolator} )
+                instance.tire.matches = response['matches'] if instance.tire.respond_to?(:matches=)
+                self
+              end
             end
           end
         end
